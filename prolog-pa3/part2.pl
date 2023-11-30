@@ -40,28 +40,31 @@ hufflepuff house wants total volume less than 20 cubic feet and total price grea
 parse(Student, Item, Cost, Volume) --> 
     student(Student),[has],[item],item(Item),[that],[costs],cost(Cost),[dollars],[''],[and],[occupies],volume(Volume),[cubic,feet],[''].
 
-parse(House, Attribute1, Comparison1, Value1, Unit1, Attribute2, Comparison2, Value2, Unit2) -->
-    house(House),[house],[wants],[total],attribute_value(Attribute1, Comparison1, Value1, Unit1),[and],
-    attribute_value(Attribute2, Comparison2, Value2, Unit2),[''].
+parse(House, Attribute1, Comparison1, Than, Value1, Unit1, Attribute2, Comparison2, Than, Value2, Unit2) -->
+    house(House),[house],[wants],[total],attribute_value(Attribute1, Comparison1, Than, Value1, Unit1),[and],[total],
+    attribute_value(Attribute2, Comparison2, Than, Value2, Unit2),[''].
 
 % gryffindor house wants total price greater than 500 dollars and total volume greater than 60 cubic feet.
 % slytherin house wants total volume less than 50 cubic feet and total price greater than 600 dollars.
 % Facts
-attribute_value(Attribute, Comparison, Value, Unit) :-
+attribute_value(Attribute, Comparison, Than, Value, Unit) -->
     attribute(Attribute),
-    comparison(Comparison),
+    comparison(Comparison, Than),
     value(Value),
     unit(Unit).
 
 % Rules
-attribute('total price') --> ['total price'].
-attribute('total volume') --> ['total volume'].
+attribute(price) --> [price].
+attribute(volume) --> [volume].
 
 
-comparison('greater than') --> ['greater than'].
-comparison('less than') --> ['less than'].
+comparison(greater,than) --> [greater, than].
+comparison(less,than) --> [less, than].
 
-value('500') --> ['500'].
+
+
+% value(x) --> atom_number(x,y).
+
 value('50') --> ['50'].
 value('80') --> ['80'].
 value('20') --> ['20'].
@@ -69,10 +72,11 @@ value('60') --> ['60'].
 value('600') --> ['600'].
 value('700') --> ['700'].
 value('250') --> ['250'].
+value('500') --> ['500'].
 % Add more values as needed.
 
-unit('dollars') --> ['dollars'].
-unit('cubic') --> ['cubic'].
+unit(dollars) --> [dollars].
+% unit(cubic,feet) --> [cubic, feet].
 
 
 
@@ -153,13 +157,18 @@ house(hufflepuff) --> [hufflepuff].
 /* This receives the whole paragraph, and goes through and prints line by line */
 recurseStudent([]).
 recurseStudent([X|Xs]) :-
-    (   phrase(parse(Student, Item, Cost, Volume), X, [])
-    ->  % If the first parse rule succeeds
-        write([Student, Item, Cost, Volume]), nl
-    ;   % If the first parse rule fails, try the second parse rule
-        phrase(parse(House, Attribute1, Comparison1, Value1, Unit1, Attribute2, Comparison2, Value2, Unit2), X, []),
-        write([House, Attribute1, Comparison1, Value1, Unit1, Attribute2, Comparison2, Value2, Unit2]), nl
+% Needs to parse correct one
+    (
+        parse(Student, Item, Cost, Volume, X, []) -> write([Student, Item, Cost, Volume]), nl
+        ;
+        parse(House, Attribute1, Comparison1, Than, Value1, Unit1, Attribute2, Comparison2, Than, Value2, Unit2, X, []),
+        write([House, Attribute1, Comparison1, Than, Value1, Unit1, Attribute2, Comparison2, Than, Value2, Unit2]), nl
     ),
+    % parse(Student, Item, Cost, Volume, X, []),
+    %write([Student, Item, Cost, Volume]), nl,
+
+    %parse(House, Attribute1, Comparison1, Than, Value1, Unit1, Attribute2, Comparison2, Than, Value2, Unit2, X, []),
+    %write([House, Attribute1, Comparison1, Than, Value1, Unit1, Attribute2, Comparison2, Than, Value2, Unit2]), nl,
     recurseStudent(Xs).
 
 
