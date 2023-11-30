@@ -1,0 +1,3 @@
+[[draco_malfoy,has,item,c,that,costs,600,dollars,and,occupies,60,cubic,feet],[daphne_greengrass,has,item,d,that,costs,400,dollars,and,occupies,15,cubic,feet]]
+
+

@@ -1,7 +1,7 @@
 :- [part2Helper].
 
 get(Subject, Adjective) --> 
-    subject(Subject),[is],adjective(Adjective).
+    subject(Subject),[is],adjective(Adjective),{last(Subject, '.')}.
 
 subject(that) --> [that].
 subject(he) --> [he].
@@ -23,6 +23,7 @@ main :-
     current_prolog_flag(argv, [DataFile|_]),
     open(DataFile, read, Stream),
     read_file(Stream,Lines), %Lines contain all the information within line split by spaces, comma and period.
+    write(Lines),
+    nl,
     recurse(Lines),
-    %write(Adjective),
     close(Stream).
